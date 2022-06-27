@@ -46,8 +46,8 @@ export default function Post({ post, morePosts, preview }) {
 	);
 }
 
-export async function getStaticProps({ params, preview = false }) {
-	const data = await getPostAndMorePosts(params.slug, preview);
+export async function getStaticProps({ params, preview = false, locales, locale }) {
+	const data = await getPostAndMorePosts(params.slug, preview, locale);
 
 	return {
 		props: {
@@ -58,8 +58,11 @@ export async function getStaticProps({ params, preview = false }) {
 	};
 }
 
-export async function getStaticPaths() {
-	const allPosts = await getAllPostsWithSlug();
+export async function getStaticPaths({ locale, locales }) {
+	let allPosts;
+	for (const locale of locales) {
+		allPosts = await getAllPostsWithSlug(locale);
+	}
 	return {
 		paths: allPosts?.map(({ slug }) => `/posts/${slug}`) ?? [],
 		fallback: true,
