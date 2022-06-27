@@ -25,7 +25,7 @@ export default async function handler(req, res) {
 	try {
 		const slugToRevalidate = body.slugToRevalidate;
 		if (slugToRevalidate) {
-			const path = `/posts/${slugToRevalidate}`;
+			let path = `/posts/${slugToRevalidate}`;
 			if (router.locale !== 'en-US') {
 				path = `${router.locale}/posts/${slugToRevalidate}`;
 			}
