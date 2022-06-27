@@ -16,7 +16,7 @@ const options = {
 	skipRoles: true,
 	skipWebhooks: true,
 	contentOnly: true,
-	queryEntries: ['fields.title'],
+	queryEntries: ['content_type=post'],
 	queryAssets: ['sys.id=0000'],
 	downloadAssets: false,
 	host: 'api.contentful.com',

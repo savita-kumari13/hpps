@@ -1,6 +1,9 @@
 // pages/api/revalidate.js
 
+import { useRouter } from 'next/router';
+
 export default async function handler(req, res) {
+	const router = useRouter();
 	// check for POST request
 	if (req.method !== 'POST') {
 		res.status(400).json({ error: 'Invalid HTTP method. Only POST requests are allowed.' });
@@ -22,7 +25,11 @@ export default async function handler(req, res) {
 	try {
 		const slugToRevalidate = body.slugToRevalidate;
 		if (slugToRevalidate) {
-			await res.unstable_revalidate(`/posts/${slugToRevalidate}`);
+			const path = `/posts/${slugToRevalidate}`;
+			if (router.locale !== 'en-US') {
+				path = `${router.locale}/posts/${slugToRevalidate}`;
+			}
+			await res.unstable_revalidate(`${path}`);
 			return res.json({ revalidated: true });
 		}
 	} catch (err) {
