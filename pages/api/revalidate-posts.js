@@ -1,18 +1,18 @@
 // pages/api/revalidate.js
 
-import { useRouter } from 'next/router';
+import { currentLocale } from '../../lib/common';
 
 export default async function handler(req, res) {
-	const router = useRouter();
+	const locale = currentLocale(req);
 	// check for POST request
 	if (req.method !== 'POST') {
 		res.status(400).json({ error: 'Invalid HTTP method. Only POST requests are allowed.' });
 	}
 
 	// check for secret token
-	if (req.query.secret !== process.env.REVALIDATE) {
-		return res.status(401).json({ message: 'Invalid token' });
-	}
+	// if (req.query.secret !== process.env.REVALIDATE) {
+	// 	return res.status(401).json({ message: 'Invalid token' });
+	// }
 
 	// check that body is not emppty
 	const body = req.body;
@@ -25,9 +25,10 @@ export default async function handler(req, res) {
 	try {
 		const slugToRevalidate = body.slugToRevalidate;
 		if (slugToRevalidate) {
+			console.log('localee------- ', locale);
 			let path = `/posts/${slugToRevalidate}`;
-			if (router.locale !== 'en-US') {
-				path = `${router.locale}/posts/${slugToRevalidate}`;
+			if (locale !== 'en-US') {
+				path = `${locale}/posts/${slugToRevalidate}`;
 			}
 			await res.unstable_revalidate(`${path}`);
 			return res.json({ revalidated: true });
