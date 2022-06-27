@@ -2,7 +2,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "next",
-		"build": "next build && next export",
+		"build": "next build",
 		"start": "next start",
 		"setup": "node ./contentful/setup.js $CONTENTFUL_SPACE_ID $CONTENTFUL_MANAGEMENT_TOKEN",
 		"extract": "lingui extract",
