@@ -3,16 +3,19 @@
 import { currentLocale } from '../../lib/common';
 
 export default async function handler(req, res) {
-	const locale = currentLocale(req);
+	// const locale = currentLocale(req);
 	// check for POST request
 	if (req.method !== 'POST') {
 		res.status(400).json({ error: 'Invalid HTTP method. Only POST requests are allowed.' });
 	}
 
+	// console.log('req.query.secret------- ', req.query.secret);
+	// console.log('process.env.REVALIDATE------- ', process.env.REVALIDATE);
+
 	// check for secret token
-	// if (req.query.secret !== process.env.REVALIDATE) {
-	// 	return res.status(401).json({ message: 'Invalid token' });
-	// }
+	if (req.query.secret !== process.env.REVALIDATE) {
+		return res.status(401).json({ message: 'Invalid token' });
+	}
 
 	// check that body is not emppty
 	const body = req.body;
@@ -24,18 +27,27 @@ export default async function handler(req, res) {
 	// get the slug to revalidate from body
 	try {
 		const slugToRevalidate = body.slugToRevalidate;
+
+		console.log('slugToRevalidate------- ', slugToRevalidate);
+
+		const locale = body.locale;
+
+		console.log('locale------- ', locale);
+
 		if (slugToRevalidate) {
-			console.log('localee------- ', locale);
+			console.log('if --- slugToRevalidate------- ');
 			let path = `/posts/${slugToRevalidate}`;
 			if (locale !== 'en-US') {
-				path = `${locale}/posts/${slugToRevalidate}`;
+				path = `/${locale}/posts/${slugToRevalidate}`;
 			}
-			await res.unstable_revalidate(`${path}`);
+			console.log('path  ', path);
+			await res.unstable_revalidate(`/es/posts/${slugToRevalidate}`);
 			return res.json({ revalidated: true });
 		}
 	} catch (err) {
 		// If there was an error, Next.js will continue
 		// to show the last successfully generated page
+		console.log('CATCHHHHH');
 		return res.status(500).send('Error revalidating');
 	}
 }
