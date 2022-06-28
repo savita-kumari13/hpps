@@ -41,7 +41,7 @@ export default async function handler(req, res) {
 				path = `/${locale}/posts/${slugToRevalidate}`;
 			}
 			console.log('path  ', path);
-			await res.unstable_revalidate(`/es/posts/${slugToRevalidate}`);
+			await res.unstable_revalidate(`${path}`);
 			return res.json({ revalidated: true });
 		}
 	} catch (err) {
